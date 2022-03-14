@@ -60,12 +60,12 @@ class BscApi:
         tx_id = self.send_raw_transaction(signed_tx)
         return tx_id
 
-    def get_reserves(self, lp_addr, token1_addr, token2_addr):
+    def get_reserves(self):
         self.make_sure_api_connected()
-        routerContract = self.web3.eth.contract(PanCakeRouterContract, abi=PanCakeRouterAbi)
-        reserve1, reserve2 = routerContract.functions \
-            .getReserves(lp_addr, token1_addr, token2_addr).call()
-        return reserve1, reserve2
+        lpContract = self.web3.eth.contract(LiquidityPairContract, abi=LiquidityPairAbi)
+        reserve1, reserve2, block_timestamp_last = lpContract.functions \
+            .getReserves().call()
+        return reserve1, reserve2, block_timestamp_last
 
     # 用以估算可以兑换数量
     def get_amount_out(self, amount_in, reserve_in, reserve_out):
